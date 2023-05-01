@@ -1,0 +1,82 @@
+﻿@using ThalesPrueba.Data;
+@model List<Employee>
+
+
+<h1>Search Employee</h1>
+<form method="get" action="@Url.Action("Search", "Employee")">
+    <label for="employeeId">ID de empleado:</label>
+    <input type="number" id="employeeId" name="id" required>
+    <button type="submit">Buscar</button>
+</form>
+
+
+
+@if (Model != null)
+{
+    <h2>Results:</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Annual Salary</th>
+                <th>Salary</th>
+                <th>Age</th>
+                <th>Profile Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var employe in Model)
+            {
+                <tr>
+                    <td>@employe.Id</td>
+                    <td>@employe.employee_name</td>
+                    <td>@employe.AnnualSalary</td>
+                    <td>@employe.employee_salary</td>
+                    <td>@employe.employee_age</td>
+                    <td><img src="@employe.profile_image" alt="Profile Image" /></td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+
+@section scripts {
+
+    <script>
+        $(function () {
+            $('#searchButton').click(function () {
+                var employeeId = $('#employeeId').val();
+                $.ajax({
+                    url: 'https://dummy.restapiexample.com/api/v1/employees?ids=' + (employeeId ? + employeeId : ''),
+                    method: 'GET',
+                    success: function (data) {
+                        $('#employeeTable tbody').empty();
+                        if (Array.isArray(data)) {
+                            data.forEach(function (employee) {
+                                addEmployeeRow(employee);
+                            });
+                        } else {
+
+                            addEmployeeRow(data);
+                        }
+                    },
+                    error: function (xhr) {
+                        alert('Error: ' + xhr.statusText);
+                    }
+                });
+            });
+        });
+
+        function addEmployeeRow(employee) {
+            var annualSalary = employee.AnnualSalary || employee.Salary * 12;
+            var row = $('<tr>');
+            row.append($('<td>').text(employee.Id));
+            row.append($('<td>').text(employee.Name));
+            row.append($('<td>').text(employee.Salary));
+            row.append($('<td>').text(annualSalary));
+            $('#employeeTable tbody').append(row);
+        }
+    </script>
+    }

@@ -1,0 +1,56 @@
+﻿@model IEnumerable<ThalesPrueba.Data.Employee>
+
+@{
+    ViewData["Title"] = "EmployeeView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>EmployeeView</h1>
+
+<form method="get" action="/employee">
+    <label for="id">ID del empleado:</label>
+    <input type="text" id="id" name="id" required>
+    <button type="submit">Buscar</button>
+</form>
+
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Salary</th>
+            <th>Age</th>
+            <th>Salary Annual</th>
+            <th>Profile Image</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employee in Model)
+        {
+            <tr>
+                <td>@employee.Id</td>
+                <td>@employee.employee_name</td>
+                <td>@employee.employee_salary</td>
+                <td>@employee.employee_age</td>
+                <td>@employee.AnnualSalary</td>
+                <td>@employee.profile_image</td>
+            </tr>
+        }
+    </tbody>
+</table>
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#searchButton").click(function () {
+                var employeeId = $("#employeeId").val();
+
+                if (employeeId == "") {
+                    window.location.href = "/Employee";
+                } else {
+                    window.location.href = "/Employee/" + employeeId;
+                }
+            });
+        });
+    </script>
+}
