@@ -3,13 +3,16 @@
 
 
 <h1>Search Employee</h1>
-<form method="get" action="@Url.Action("Search", "Employee")">
-    <label for="employeeId">ID de empleado:</label>
-    <input type="number" id="employeeId" name="id" required>
-    <button type="submit">Buscar</button>
+<p></p>
+<form method="get" action="@Url.Action("Index", "Employee")">
+    <div class="input-field">
+        <input  type="number" id="employeeId" name="id" required />
+        <button class="btn-search">Search</button>
+    </div>
+   
 </form>
 
-
+<p></p>
 
 @if (Model != null)
 {

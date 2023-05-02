@@ -19,29 +19,59 @@ namespace ThalesPrueba.Controllers
         }
 
 
-        public async Task<ActionResult> Index()
+        //public async Task<ActionResult> Index()
+        //{
+        //    using (var httpClient = new HttpClient())
+        //    {
+        //        httpClient.BaseAddress = new Uri("https://dummy.restapiexample.com/api/v1/");
+        //        HttpResponseMessage response = await httpClient.GetAsync("employees");
+        //        string responseBody = await response.Content.ReadAsStringAsync();
+        //        Root root = JsonConvert.DeserializeObject<Root>(responseBody);
+        //        employe = root.data;
+        //        Debug.WriteLine($"Response: {responseBody}");
+
+
+        //        // Debugging messages
+        //        foreach (var employee in employe)
+        //        {
+        //            Debug.WriteLine($"Name: {employee.employee_name}, Salary: {employee.employee_salary}");
+        //            EmployeeBusinessLogic employeeBusinessLogic = new EmployeeBusinessLogic();
+        //            employeeBusinessLogic.CalculateAnnualSalary(employee);
+        //        }
+        //        return View(employe.ToList());
+
+        //    }
+        //}
+        public async Task<ActionResult> Index(int? id)
         {
-            using (var httpClient = new HttpClient())
+            if (id.HasValue)
             {
-                httpClient.BaseAddress = new Uri("https://dummy.restapiexample.com/api/v1/");
-                HttpResponseMessage response = await httpClient.GetAsync("employees");
-                string responseBody = await response.Content.ReadAsStringAsync();
-                Root root = JsonConvert.DeserializeObject<Root>(responseBody);
-                employe = root.data;
-                Debug.WriteLine($"Response: {responseBody}");
-
-
-                // Debugging messages
-                foreach (var employee in employe)
+                // If an id was provided, call the GetEmployeeById action method instead
+                return RedirectToAction("GetEmployeeById", "Home", new { id = id.Value });
+            }
+            else
+            {
+                using (var httpClient = new HttpClient())
                 {
-                    Debug.WriteLine($"Name: {employee.employee_name}, Salary: {employee.employee_salary}");
-                    EmployeeBusinessLogic employeeBusinessLogic = new EmployeeBusinessLogic();
-                    employeeBusinessLogic.CalculateAnnualSalary(employee);
+                    httpClient.BaseAddress = new Uri("https://dummy.restapiexample.com/api/v1/");
+                    HttpResponseMessage response = await httpClient.GetAsync("employees");
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    Root root = JsonConvert.DeserializeObject<Root>(responseBody);
+                    employe = root.data;
+                    Debug.WriteLine($"Response: {responseBody}");
+
+                    // Debugging messages
+                    foreach (var employee in employe)
+                    {
+                        Debug.WriteLine($"Name: {employee.employee_name}, Salary: {employee.employee_salary}");
+                        EmployeeBusinessLogic employeeBusinessLogic = new EmployeeBusinessLogic();
+                        employeeBusinessLogic.CalculateAnnualSalary(employee);
+                    }
+                    return View(employe.ToList());
                 }
-                return View(employe.ToList());
-                return View(employe);
             }
         }
+
 
         [HttpPost]
         public ActionResult Index(FormCollection formCollection)
@@ -50,7 +80,7 @@ namespace ThalesPrueba.Controllers
             bool isInt = int.TryParse(formCollection["employeeId"], out employeeId);
             if (isInt)
             {
-                return RedirectToAction("SearchById", new { employeeId = employeeId });
+                return RedirectToAction("Index", new { employeeId = employeeId });
             }
             else
             {
